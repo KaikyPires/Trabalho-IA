@@ -1,0 +1,6 @@
+kagglehub/
+
+__pycache__/
+*.pyc
+
+models/

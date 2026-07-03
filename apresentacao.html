@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação: Classificação de Tumores Cerebrais</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.8);
+            --border-color: rgba(48, 54, 61, 0.8);
+            --primary: #58a6ff;
+            --primary-gradient: linear-gradient(135deg, #58a6ff 0%, #bc8cff 100%);
+            --text-color: #c9d1d9;
+            --text-bright: #f0f6fc;
+            --accent-green: #3fb950;
+            --accent-red: #f85149;
+            --font-title: 'Outfit', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(circle at 10% 20%, rgba(88, 166, 255, 0.05) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(188, 140, 255, 0.05) 0%, transparent 40%);
+        }
+
+        .presentation-container {
+            width: 90vw;
+            height: 85vh;
+            max-width: 1200px;
+            max-height: 800px;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95) translateZ(-50px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1) translateZ(0);
+        }
+
+        /* Cabeçalho do Slide */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .slide-header h2 {
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-tag {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #8b949e;
+        }
+
+        /* Conteúdo do Slide */
+        .slide-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 30px 0;
+            font-size: 1.15rem;
+            line-height: 1.7;
+        }
+
+        /* Rodapé do Slide */
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #8b949e;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        /* Layouts do Conteúdo */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .card {
+            background: rgba(33, 38, 45, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .card h3 {
+            font-family: var(--font-title);
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: var(--text-bright);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card ul {
+            list-style-position: inside;
+            list-style-type: none;
+        }
+
+        .card li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .card li::before {
+            content: "✦";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        /* Tabelas elegantes */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-family: var(--font-title);
+            color: var(--text-bright);
+            font-weight: 600;
+            background: rgba(33, 38, 45, 0.8);
+        }
+
+        tr:hover {
+            background: rgba(56, 139, 253, 0.05);
+        }
+
+        .highlight-row {
+            background: rgba(56, 139, 253, 0.1) !important;
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Controles de Navegação */
+        .controls {
+            margin-top: 25px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-gradient);
+            color: var(--bg-color);
+            border-color: transparent;
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.4);
+        }
+
+        .slide-counter {
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Slide Especial de Capa */
+        .slide-cover {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .slide-cover h1 {
+            font-family: var(--font-title);
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .slide-cover h4 {
+            font-size: 1.2rem;
+            color: #8b949e;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .slide-cover .meta-info {
+            margin-top: 40px;
+            font-size: 1.1rem;
+            color: #8b949e;
+        }
+
+        .badge-grid {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .badge {
+            background: rgba(56, 139, 253, 0.15);
+            border: 1px solid rgba(56, 139, 253, 0.4);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="presentation-container">
+
+        <!-- SLIDE 1: CAPA -->
+        <div class="slide slide-cover active">
+            <h4>Projeto Prático • Inteligência Artificial</h4>
+            <h1>Classificação de Tumores Cerebrais em Ressonâncias</h1>
+            <div class="badge-grid">
+                <div class="badge">TensorFlow / Keras</div>
+                <div class="badge">Scikit-Learn</div>
+                <div class="badge">8 Experimentos</div>
+            </div>
+            <div class="meta-info">
+                <p><strong>Aluno:</strong> Kaiky Pires</p>
+                <p>Bacharelado em Sistemas de Informação – IFMG Ouro Branco</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: O PROBLEMA E O DATASET -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>O Desafio e os Dados</h2>
+                <div class="slide-tag">Slide 2 / 7</div>
+            </div>
+            <div class="slide-content">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>🧠 Objetivo</h3>
+                        <p>Desenvolver uma inteligência artificial capaz de analisar exames de Ressonância Magnética cerebral e classificar em 4 diagnósticos possíveis.</p>
+                    </div>
+                    <div class="card">
+                        <h3>📊 O Dataset (Kaggle)</h3>
+                        <p>Total de <strong>7.200 imagens</strong> perfeitamente balanceadas (1.800 fotos de cada classe):</p>
+                        <ul style="margin-top: 10px;">
+                            <li><strong>Glioma:</strong> Tumor nas células gliais</li>
+                            <li><strong>Meningioma:</strong> Tumor nas membranas do cérebro</li>
+                            <li><strong>Pituitary:</strong> Tumor na glândula hipófise</li>
+                            <li><strong>No Tumor:</strong> Cérebros saudáveis</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>BSI - IFMG</span>
+                <span>Use as setas ← → para navegar</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: CNN VS MLP -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>CNN vs MLP: A Abordagem</h2>
+                <div class="slide-tag">Slide 3 / 7</div>
+            </div>
+            <div class="slide-content">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>🖼️ CNN (Convolutional Neural Network)</h3>
+                        <p><strong>Foco Espacial:</strong> Mantém a imagem em 3D (Matriz com canais de cores).</p>
+                        <p style="margin-top: 8px; font-size: 0.95rem; color: #8b949e;">Aplica filtros matemáticos para encontrar contornos, texturas e formatos de tumores em diferentes áreas da foto.</p>
+                    </div>
+                    <div class="card">
+                        <h3>📏 MLP (Multilayer Perceptron)</h3>
+                        <p><strong>Foco Linear:</strong> Achata toda a imagem em uma linha reta de números.</p>
+                        <p style="margin-top: 8px; font-size: 0.95rem; color: #8b949e;">Perde a noção de espaço e vizinhança entre pixels. Funciona como o nosso ponto de partida clássico (baseline).</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>BSI - IFMG</span>
+                <span>Diferença conceitual das arquiteturas</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: OS EXPERIMENTOS -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>O Desenho dos 8 Experimentos</h2>
+                <div class="slide-tag">Slide 4 / 7</div>
+            </div>
+            <div class="slide-content">
+                <p style="margin-bottom: 15px; font-size: 1rem; color: #8b949e;">Variamos as técnicas de combate ao overfitting (Dropout e L2) de forma paralela nas duas arquiteturas:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Modelo</th>
+                            <th>Técnica Principal</th>
+                            <th>Detalhe Técnico</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>CNN Básica</td>
+                            <td>Baseline</td>
+                            <td>Sem regularização</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>CNN + Dropout</td>
+                            <td>Dropout (0.3 / 0.5)</td>
+                            <td>Desliga neurônios no treino</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td>3</td>
+                            <td>CNN + L2</td>
+                            <td>Regularização L2 (0.001)</td>
+                            <td>Penaliza pesos muito altos</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>CNN Hiperparâmetros</td>
+                            <td>Capacidade Dobrada</td>
+                            <td>Filtros de 64 a 256, LR menor</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>MLP Básica</td>
+                            <td>Baseline MLP</td>
+                            <td>Duas camadas (256, 128)</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>MLP Neurônios</td>
+                            <td>Capacidade Aumentada</td>
+                            <td>Três camadas ocultas</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>MLP + Dropout</td>
+                            <td>Dropout (0.4)</td>
+                            <td>Desliga neurônios densos</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>MLP + L2</td>
+                            <td>Regularização L2 (0.001)</td>
+                            <td>Penalização de pesos na MLP</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="slide-footer">
+                <span>BSI - IFMG</span>
+                <span>Próximo passo: Demonstração do Código no VSCode</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: RESULTADOS -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Tabela Final de Resultados</h2>
+                <div class="slide-tag">Slide 5 / 7</div>
+            </div>
+            <div class="slide-content">
+                <p style="margin-bottom: 15px; font-size: 1rem; color: #8b949e;">Métricas weighted calculadas usando o Scikit-Learn no conjunto de teste inédito (1.600 imagens):</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Experimento</th>
+                            <th>Modelo</th>
+                            <th>Accuracy</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>F1-Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlight-row">
+                            <td>3</td>
+                            <td><strong>CNN + L2</strong></td>
+                            <td><strong>CNN</strong></td>
+                            <td><strong>89.94%</strong></td>
+                            <td><strong>90.15%</strong></td>
+                            <td><strong>89.94%</strong></td>
+                            <td><strong>89.79% 🥇</strong></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>CNN Básica</td>
+                            <td>CNN</td>
+                            <td>89.06%</td>
+                            <td>89.49%</td>
+                            <td>89.06%</td>
+                            <td>88.87%</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>CNN Hiperparâmetros</td>
+                            <td>CNN</td>
+                            <td>86.50%</td>
+                            <td>86.94%</td>
+                            <td>86.50%</td>
+                            <td>86.26%</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>CNN + Dropout</td>
+                            <td>CNN</td>
+                            <td>80.94%</td>
+                            <td>80.75%</td>
+                            <td>80.94%</td>
+                            <td>79.97%</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>MLP Mais Neurônios</td>
+                            <td>MLP</td>
+                            <td>83.00%</td>
+                            <td>83.17%</td>
+                            <td>83.00%</td>
+                            <td>82.86%</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>MLP Básica</td>
+                            <td>MLP</td>
+                            <td>82.56%</td>
+                            <td>82.58%</td>
+                            <td>82.56%</td>
+                            <td>82.40%</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>MLP + L2</td>
+                            <td>MLP</td>
+                            <td>80.94%</td>
+                            <td>80.62%</td>
+                            <td>80.94%</td>
+                            <td>80.61%</td>
+                        </tr>
+                        <tr style="color: var(--accent-red)">
+                            <td>7</td>
+                            <td>MLP + Dropout</td>
+                            <td>MLP</td>
+                            <td>66.87%</td>
+                            <td>68.26%</td>
+                            <td>66.87%</td>
+                            <td>66.00% 🔴</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="slide-footer">
+                <span>BSI - IFMG</span>
+                <span>Métricas geradas em evaluate.py</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: ANÁLISE E DISCUSSÃO -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Análise e Discussão dos Testes</h2>
+                <div class="slide-tag">Slide 6 / 7</div>
+            </div>
+            <div class="slide-content">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>🟢 L2 foi a melhor regularização</h3>
+                        <p>O L2 funcionou muito bem na CNN (89.79% F1) porque ele apenas reduz suavemente pesos exagerados. Isso força os filtros a espalharem o aprendizado pela imagem, sem desligar nenhuma conexão.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔴 Dropout foi prejudicial</h3>
+                        <p>O Dropout de 40% na MLP (66% acurácia) desativou neurônios demais em camadas ocultas já pequenas (256, 128). O modelo perdeu a capacidade de aprender as 12 mil entradas.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>BSI - IFMG</span>
+                <span>Análise de comportamento dos modelos</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: CONCLUSÕES -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Conclusões Finais</h2>
+                <div class="slide-tag">Slide 7 / 7</div>
+            </div>
+            <div class="slide-content">
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3>🎯 CNN é ideal para visão computacional</h3>
+                    <p>Ao preservar a relação espacial de vizinhança dos pixels, as CNNs superaram as MLPs em todos os cenários equivalentes em cerca de 7 a 8 pontos percentuais.</p>
+                </div>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>🛠️ Menos é Mais</h3>
+                        <p>Modelos menores (4 milhões de parâmetros) foram melhores que redes gigantes (17 milhões), que sofreram overfitting mais rápido.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🏥 Apoio Médico</h3>
+                        <p>A classe saudável teve excelente recall, diminuindo falsos negativos, o que é de suma importância em triagens médicas.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>BSI - IFMG</span>
+                <span>Agradeço pela atenção!</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Controles -->
+    <div class="controls">
+        <button class="btn" id="prevBtn">← Voltar</button>
+        <span class="slide-counter" id="counter">1 / 7</span>
+        <button class="btn" id="nextBtn">Avançar →</button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const counter = document.getElementById('counter');
+        let currentSlide = 0;
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            counter.textContent = `${currentSlide + 1} / ${slides.length}`;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        });
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    updateSlide();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlide();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
